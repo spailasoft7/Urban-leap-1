@@ -1,0 +1,54 @@
+body{
+  background-image:url(R.png) ;
+}
+h2{
+    color: #666;
+    font-family: monospace;
+    text-align: center;
+}
+.background{
+    table-layout: fixed;
+    border-spacing: 0;
+}
+.background td{
+    padding:  0;
+}
+.lava, .actor{
+    background: #ff0000;
+    border: #ff0000 double 2px;
+}
+.wall{
+    background: gray;
+    border: solid 3px #333;
+    box-sizing: content-box;
+    
+}
+.actor{
+    position: absolute;
+}
+.coin{
+    background: #e2e838;
+    border-radius: 50%;   /* Makes the element a circle */
+    width: 20px;          /* Set width */
+    height: 20px;         /* Set height */
+    display: inline-block;/* Ensures it behaves like a block */
+    border: 2px solid #c9c200; /* Optional: adds a border for effect */
+}
+.player{
+    background: linear-gradient(135deg, #335699 60%, #4fa3ff 100%);
+    border-radius: 40%;
+    box-shadow: 0 0 12px #4fa3ff, 0 2px 8px #222;
+    border: 2px solid #1a2a40;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.lost .player{
+    background: #ff0000;
+}
+.won .player {
+    background: rgb(0, 255, 0);
+}
+
+.game{
+    position: relative;
+    overflow: hidden;
+}
