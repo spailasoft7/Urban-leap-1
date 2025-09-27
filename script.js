@@ -1,5 +1,9 @@
+// Place this in script.js or your main JS file
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('Service Worker registered'))
-    .catch(err => console.error('Service Worker registration failed:', err));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/UL/service-worker.js')
+      .then(reg => console.log('Service Worker registered!', reg))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  });
 }
+//place h
