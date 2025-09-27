@@ -1,44 +1,84 @@
-self.addEventListener("install", (e) => {
-  console.log("[Service Worker] Install");
-});
-const cacheName = "js13kPWA-v1";
-const appShellFiles = [
-   "/",
+const CACHE_NAME = "urbanleap-cache-v1";
+const urlsToCache = [
+  "/",
   "/index.html",
   "/styles.css",
   "/script.js",
+  "/game.js",
   "/icon-192.png",
   "/icon-512.png",
   "/screenshot1.png",
+  "/512.png",
   "/R.png",
-  "/game.js"
+  "/manifest.json"
 ];
-self.addEventListener("install", (e) => {
-  console.log("[Service Worker] Install");
-  e.waitUntil(
-    (async () => {
-      const cache = await caches.open(cacheName);
-      console.log("[Service Worker] Caching all: app shell and content");
-      await cache.addAll(contentToCache);
-    })(),
+
+// Install event: cache all files
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+  );
+  self.skipWaiting();
+});
+
+// Activate event: clean up old caches
+self.addEventListener("activate", (event) => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames.map((cacheName) => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
+        })
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+// Fetch event: serve cached files, fallback to network, fallback to offline page
+self.addEventListener("fetch", (event) => {
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      caches.match("/index.html").then((response) => response || fetch(event.request))
+    );
+    return;
+  }
+  event.respondWith(
+    caches.match(event.request).then((response) => response || fetch(event.request))
   );
 });
-self.addEventListener("fetch", (e) => {
-  console.log(`[Service Worker] Fetched resource ${e.request.url}`);
+
+// Periodic Sync (example, requires registration in main JS)
+self.addEventListener("periodicsync", (event) => {
+  if (event.tag === "urbanleap-sync") {
+    event.waitUntil(
+      // Example: fetch updates or sync data
+      fetch("/api/sync")
+    );
+  }
 });
-self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    (async () => {
-      const r = await caches.match(e.request);
-      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      if (r) {
-        return r;
-      }
-      const response = await fetch(e.request);
-      const cache = await caches.open(cacheName);
-      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-      cache.put(e.request, response.clone());
-      return response;
-    })(),
-  );
+
+// Background Sync (example, requires registration in main JS)
+self.addEventListener("sync", (event) => {
+  if (event.tag === "urbanleap-bg-sync") {
+    event.waitUntil(
+      // Example: send queued requests
+      fetch("/api/bg-sync")
+    );
+  }
+});
+
+// Push Notifications (example)
+self.addEventListener("push", (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || "Urban Leap Notification";
+  const options = {
+    body: data.body || "You have a new notification.",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png"
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
 });
