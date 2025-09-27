@@ -1,4 +1,4 @@
-const CACHE_NAME = "studyhero-cache-v1";
+const CACHE_NAME = "UL-cache-v1";
 const urlsToCache = [
   "/",
   "/index.html",
