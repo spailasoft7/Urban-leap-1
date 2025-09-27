@@ -1,11 +1,11 @@
 {
-  "name": "StudyHero",
-  "short_name": "StudyHero",
-  "description": "An offline-friendly hybrid learning assistant for students to explore topics with video, notes, and search features.",
+  "name": "Urban Leap",
+  "short_name": "Urban Leap",
+  "description": " It a parkour game",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#f0f8ff",
-  "theme_color": "#4CAF50",
+  "background_color": "#1f51ff",
+  "theme_color": "#1f51ff",
   "icons": [
     {
       "src": "icon-192.png",
